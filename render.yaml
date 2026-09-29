@@ -15,3 +15,5 @@ services:
         sync: false
       - key: GROQ_MODEL
         value: llama-3.3-70b-versatile
+      - key: GROQ_TTS_VOICE
+        value: hannah

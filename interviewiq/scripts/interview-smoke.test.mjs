@@ -4,6 +4,20 @@ import assert from 'node:assert/strict';
 const base = process.env.TEST_BASE_URL || 'http://localhost:3000';
 const input = { track: 'DSA & Coding', level: 'Mid-level', question: { id: 'dsa-1' }, answer: 'Use a dictionary for complements.', code: 'def two_sum(nums, target):\n    return []' };
 const post = (body) => fetch(`${base}/api/interview`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: typeof body === 'string' ? body : JSON.stringify(body) });
+const endpoint = (path,body) => fetch(`${base}/api/${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+
+test('invalid generation topic rejected',async()=>assert.equal((await endpoint('question',{topic:'unknown',level:'Senior'})).status,400));
+test('question generation returns a usable question or labelled fallback',async()=>{
+  const response=await endpoint('question',{topic:'dsa',level:'Senior',previousQuestions:[]});
+  assert.equal(response.status,200);
+  const data=await response.json();
+  assert.ok(data.question.prompt && data.question.coding.starter);
+  assert.ok(['groq','curated'].includes(data.source));
+  if(data.source==='groq') assert.ok(data.question.token); else assert.ok(data.reason);
+});
+test('invalid signed question rejected',async()=>assert.equal((await post({...input,question:{id:'ai-invalid',token:'bad.signature'}})).status,400));
+test('speech rejects oversized chunks',async()=>assert.equal((await endpoint('speech',{text:'a'.repeat(201)})).status,400));
+test('speech rejects empty text',async()=>assert.equal((await endpoint('speech',{text:''})).status,400));
 
 test('health is available', async () => {
   const response = await fetch(`${base}/api/health`);
@@ -17,7 +31,7 @@ test('unchanged starter is rejected', async () => {
   const code = 'def two_sum(nums: list[int], target: int) -> list[int]:\n    # Return two distinct indices, or []\n    pass\n';
   assert.equal((await post({ ...input, code })).status, 400);
 });
-test('oversized submission is rejected', async () => assert.equal((await post('x'.repeat(45001))).status, 413));
+test('oversized submission is rejected', async () => assert.equal((await post('x'.repeat(80001))).status, 413));
 test('solution review has an honest source and score', async () => {
   const response = await post(input);
   assert.equal(response.status, 200);

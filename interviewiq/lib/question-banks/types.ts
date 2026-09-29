@@ -4,6 +4,7 @@ export type Difficulty = "Junior" | "Mid-level" | "Senior";
 
 export type InterviewQuestion = {
   id: string;
+  token?: string;
   prompt: string;
   followUp: string;
   idealAnswer: string;
