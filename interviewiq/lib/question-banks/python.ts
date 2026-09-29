@@ -1,0 +1,16 @@
+import type { Track } from "./types";
+
+export const pythonTrack: Track = {
+  id: "python",
+  label: "Python Engineering",
+  shortLabel: "Python",
+  description: "Language internals, concurrency, testing, and production design.",
+  accent: "#d7ff3f",
+  questions: [
+    { id: "py-1", prompt: "Walk me through what happens when Python evaluates a function call. Where do scope and closures fit in?", followUp: "When can a late-bound closure surprise you, and how would you fix it?", signals: ["call frame", "LEGB", "closure", "late binding"], idealAnswer: "Python creates a call frame with local state, resolves names using LEGB, binds arguments, and executes bytecode. Closures retain references to free variables, not frozen values, which explains late-binding surprises in loops. Bind with a default argument or create a factory scope." },
+    { id: "py-2", prompt: "A Python API becomes slow under 500 concurrent requests. How do you decide between threads, asyncio, and processes?", followUp: "How would your answer change if 80% of the time is JSON serialization?", signals: ["I/O-bound", "CPU-bound", "GIL", "profiling"], idealAnswer: "Measure first. Asyncio or threads suit I/O waits; processes suit CPU-heavy work because the GIL limits parallel Python bytecode. Serialization is CPU work, so optimize it, use a faster native serializer, or isolate it in processes after profiling overhead." },
+    { id: "py-3", prompt: "Design a retry decorator for production. What details make it safe rather than merely convenient?", followUp: "Which exceptions would you never retry?", signals: ["exponential backoff", "jitter", "idempotency", "exception filtering"], idealAnswer: "Use bounded attempts, exponential backoff with jitter, explicit retryable exceptions, cancellation support, observability, and idempotency awareness. Do not retry validation, authentication, programming errors, or permanent 4xx failures." },
+    { id: "py-4", prompt: "Explain Python's data model using a custom collection as an example.", followUp: "When would you implement __iter__ instead of __getitem__?", signals: ["dunder methods", "protocol", "iterator", "composition"], idealAnswer: "The data model exposes protocols through special methods such as __len__, __iter__, __contains__, and __getitem__. A custom collection implements only the protocols it promises. __iter__ gives explicit lazy traversal; __getitem__ iteration is a legacy fallback." },
+    { id: "py-5", prompt: "How would you test code that reads from an external API, transforms data, and writes to a database?", followUp: "What would you keep in an integration test?", signals: ["dependency injection", "unit boundary", "contract test", "transaction"], idealAnswer: "Separate pure transformation from I/O, inject clients, unit-test transformations and failure handling, use contract tests for the API boundary, and integration-test real database behavior inside rollbackable transactions. Avoid mocking implementation details." },
+  ],
+};

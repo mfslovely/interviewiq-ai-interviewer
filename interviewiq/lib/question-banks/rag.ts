@@ -1,0 +1,13 @@
+import type { Track } from "./types";
+
+export const ragTrack: Track = {
+  id: "rag", label: "RAG Systems", shortLabel: "RAG", accent: "#ffb454",
+  description: "Retrieval, chunking, evaluation, grounding, and production quality.",
+  questions: [
+    { id: "rag-1", prompt: "Design a RAG pipeline for thousands of technical documents that change every day.", followUp: "How do you update one document without rebuilding everything?", signals: ["ingestion", "chunking", "embeddings", "incremental indexing"], idealAnswer: "Build idempotent ingestion with document hashes and versions, structure-aware chunking, metadata, embeddings, and incremental upsert/delete. Keep raw source lineage so changed documents alone are reprocessed." },
+    { id: "rag-2", prompt: "Retrieval returns relevant documents, but the final answer is still wrong. How do you debug it?", followUp: "How would you separate retrieval quality from generation quality?", signals: ["retrieval metrics", "prompt", "context ordering", "faithfulness"], idealAnswer: "Log retrieved chunks, scores, prompt, and answer. Evaluate retrieval with recall or nDCG against labeled evidence, then evaluate faithfulness and answer correctness with the evidence fixed. Check context truncation, ordering, conflicts, and prompt constraints." },
+    { id: "rag-3", prompt: "When is hybrid search better than vector search alone?", followUp: "How would you combine the rankings?", signals: ["BM25", "semantic search", "rare terms", "reciprocal rank fusion"], idealAnswer: "Hybrid search helps when exact identifiers, acronyms, names, or rare terms matter alongside semantic similarity. Combine lexical and vector ranks with reciprocal rank fusion or calibrated weighted scores, then rerank." },
+    { id: "rag-4", prompt: "How would you choose chunk size and overlap instead of guessing?", followUp: "What changes for tables and source code?", signals: ["semantic boundary", "evaluation", "context window", "metadata"], idealAnswer: "Start from document structure and answer granularity, preserve semantic units, then sweep chunking settings on a labeled query set. Tables need headers and row context; code needs symbol-aware chunks and file/module metadata." },
+    { id: "rag-5", prompt: "How do you make a RAG answer trustworthy for a regulated workflow?", followUp: "What should happen when evidence is weak?", signals: ["citations", "access control", "abstention", "audit log"], idealAnswer: "Enforce source-level permissions before retrieval, cite exact passages, record lineage and prompts, measure faithfulness, and add calibrated abstention. Weak or conflicting evidence should trigger a clear refusal or human review, not confident synthesis." },
+  ],
+};
