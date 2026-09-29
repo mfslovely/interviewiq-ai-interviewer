@@ -17,7 +17,7 @@ Add your Groq key to `.env.local`. Without a key, the app automatically uses its
 ## Environment
 
 - `GROQ_API_KEY`: Groq API key. Kept server-side.
-- `GROQ_MODEL`: Optional model override; defaults to `llama-3.3-70b-versatile`.
+- `GROQ_MODEL`: Optional model override; defaults to `openai/gpt-oss-20b`.
 
 ## Deploy to Render
 

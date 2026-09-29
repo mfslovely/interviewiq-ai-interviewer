@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   const fallback = (reason: string) => Response.json({ question: trackMap[body.topic].questions[Math.min(body.previousQuestions.length, 4)], source: "curated", reason });
   if (!process.env.GROQ_API_KEY) return fallback("Groq key missing — curated question");
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { method:"POST", signal:AbortSignal.timeout(25000), headers:{"Content-Type":"application/json", Authorization:`Bearer ${process.env.GROQ_API_KEY}`}, body:JSON.stringify({model:process.env.GROQ_MODEL || "llama-3.3-70b-versatile", temperature:0.7, max_completion_tokens:3000, response_format:{type:"json_object"}, messages:[{role:"system",content:QUESTION_PROMPT},{role:"user",content:JSON.stringify(body)}]}) });
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", { method:"POST", signal:AbortSignal.timeout(25000), headers:{"Content-Type":"application/json", Authorization:`Bearer ${process.env.GROQ_API_KEY}`}, body:JSON.stringify({model:process.env.GROQ_MODEL || "openai/gpt-oss-20b", temperature:0.7, max_completion_tokens:3000, response_format:{type:"json_object"}, messages:[{role:"system",content:QUESTION_PROMPT},{role:"user",content:JSON.stringify(body)}]}) });
     if (!response.ok) throw new Error("Provider unavailable");
     const data = await response.json() as {choices?:{message?:{content?:string}}[]};
     const generated = generatedSchema.parse(JSON.parse(data.choices?.[0]?.message?.content || "{}"));

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST", signal: AbortSignal.timeout(25000),
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
-      body: JSON.stringify({ model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile", temperature: 0.25, max_completion_tokens: 1800, response_format: { type: "json_object" }, messages: [
+      body: JSON.stringify({ model: process.env.GROQ_MODEL || "openai/gpt-oss-20b", temperature: 0.25, max_completion_tokens: 1800, response_format: { type: "json_object" }, messages: [
         { role: "system", content: SCORING_PROMPT },
         { role: "user", content: JSON.stringify({ role: generated?.topic || body.track, level: body.level, question: question.prompt, reference: question.idealAnswer, expectedConcepts: question.signals, coding: question.coding, candidateAnswer: body.answer, candidateCode: body.code, followUpQuestion: body.followUp, previousAnswer: body.previousAnswer }) }
       ] })

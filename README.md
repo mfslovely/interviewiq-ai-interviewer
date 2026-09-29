@@ -48,7 +48,7 @@ Copy `.env.example` to `.env.local`, then configure:
 
 ```dotenv
 GROQ_API_KEY=your_groq_api_key
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-20b
 GROQ_TTS_VOICE=hannah
 ```
 
