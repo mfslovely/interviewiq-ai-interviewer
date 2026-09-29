@@ -5,6 +5,16 @@
 :root { --background:#090c0f; --foreground:#f4f7f0; --card:#11161a; --card-foreground:#f4f7f0; --popover:#11161a; --popover-foreground:#f4f7f0; --primary:#d7ff3f; --primary-foreground:#0a0d10; --secondary:#1a2024; --secondary-foreground:#f4f7f0; --muted:#171d21; --muted-foreground:#96a19b; --accent:#20282d; --accent-foreground:#f4f7f0; --destructive:#ff5d6c; --border:#293136; --input:#303a40; --ring:#d7ff3f; --radius:.6rem; }
 @theme inline { --color-background:var(--background); --color-foreground:var(--foreground); --color-card:var(--card); --color-card-foreground:var(--card-foreground); --color-popover:var(--popover); --color-popover-foreground:var(--popover-foreground); --color-primary:var(--primary); --color-primary-foreground:var(--primary-foreground); --color-secondary:var(--secondary); --color-secondary-foreground:var(--secondary-foreground); --color-muted:var(--muted); --color-muted-foreground:var(--muted-foreground); --color-accent:var(--accent); --color-accent-foreground:var(--accent-foreground); --color-destructive:var(--destructive); --color-border:var(--border); --color-input:var(--input); --color-ring:var(--ring); --radius-sm:calc(var(--radius) - 4px); --radius-md:calc(var(--radius) - 2px); --radius-lg:var(--radius); --radius-xl:calc(var(--radius) + 5px); --font-sans:"Aptos","Segoe UI",Arial,sans-serif; --font-mono:"Cascadia Code",Consolas,monospace; }
 * { box-sizing:border-box; }
+.coding-brief,.solution-panel { border:1px solid #2c463e; background:#0d1915; padding:22px; margin-top:18px; }
+.editor-top { display:flex; gap:10px; align-items:center; color:#62efb0; margin-bottom:12px; font-size:14px; }
+.editor-top span { margin-left:auto; color:#9caaa3; font-size:12px; }
+.editor-top label { margin:0; color:#62efb0; }
+.coding-brief p,.editor-help { color:#a6b7ad; font-size:14px; line-height:1.6; }
+.coding-brief pre,.solution-panel pre { white-space:pre-wrap; overflow-wrap:anywhere; font:14px/1.7 Consolas,monospace; color:#d0e9dc; }
+.answer-panel textarea.code-editor { font:15px/1.7 Consolas,monospace; min-height:270px; tab-size:4; color:#a9f5d0; background:#080e0c; }
+.solution-panel summary { cursor:pointer; color:#62efb0; font-weight:600; }
+.solution-panel p { color:#afc1b5; font-size:14px; }
+.error-message { color:#ffadb5; border:1px solid #79434a; padding:16px; }
 html { background:#090c0f; }
 body { margin:0; background:var(--background); color:var(--foreground); font-family:"Aptos","Segoe UI",Arial,sans-serif; min-width:320px; }
 button,textarea { font:inherit; }

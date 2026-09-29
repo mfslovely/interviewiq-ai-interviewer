@@ -1,4 +1,4 @@
-export type TrackId = "python" | "fullstack" | "rag" | "genai" | "frontend" | "aws";
+export type TrackId = "python" | "fullstack" | "rag" | "genai" | "frontend" | "aws" | "dsa";
 
 export type Difficulty = "Junior" | "Mid-level" | "Senior";
 
@@ -8,6 +8,7 @@ export type InterviewQuestion = {
   followUp: string;
   idealAnswer: string;
   signals: string[];
+  coding?: { starter: string; examples: string[]; constraints: string; solution: string; complexity: string };
 };
 
 export type Track = {

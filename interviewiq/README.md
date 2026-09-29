@@ -1,5 +1,7 @@
 # InterviewIQ
 
+See the [complete project README](../README.md) for screenshots, all seven tracks, DSA coding exercises, testing, and deployment instructions. Coding submissions are reviewed, not executed; demo mode is ungraded.
+
 InterviewIQ is a voice-enabled AI mock interviewer for Python, full-stack, RAG, GenAI, frontend, and AWS roles. It includes curated question banks, seniority settings, live transcription, spoken questions, per-answer coaching, model answers, follow-ups, and a final scorecard.
 
 ## Run locally
