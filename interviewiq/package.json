@@ -7,10 +7,11 @@
   },
   "scripts": {
     "install:ci": "node scripts/install-ci.mjs",
-    "dev": "node scripts/run-framework.mjs dev",
-    "build": "node scripts/run-framework.mjs build",
-    "start": "node ./node_modules/vinext/dist/cli.js start",
-    "start:render": "node ./node_modules/vinext/dist/cli.js start --hostname 0.0.0.0",
+    "dev": "vite",
+    "build": "node scripts/build-render.mjs",
+    "build:frontend": "vite build",
+    "start": "python -m backend",
+    "start:render": ".venv/bin/python -m backend",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },

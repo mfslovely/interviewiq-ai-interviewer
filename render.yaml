@@ -1,11 +1,11 @@
 services:
   - type: web
     name: interviewiq
-    runtime: node
+    runtime: python
     plan: free
     rootDir: interviewiq
-    buildCommand: npm ci && npm run build
-    startCommand: npm run start:render
+    buildCommand: npm ci && npm run build:frontend && pip install -r requirements.txt
+    startCommand: python -m backend
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:

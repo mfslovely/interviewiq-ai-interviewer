@@ -1,127 +1,148 @@
-# InterviewIQ — AI Technical Interviewer
+# InterviewIQ — Python + FastAPI AI Interviewer
 
-Practice a technical interview with Maya: explain your reasoning, write Python, answer follow-up questions, and compare your approach with reference answers.
+[Live demo](https://interviewiq-ledf.onrender.com) · [GitHub](https://github.com/mfslovely/interviewiq-ai-interviewer)
 
-[Open the live demo](https://interviewiq-ledf.onrender.com)
+Practice technical interviews with contextual questions, Python coding exercises, follow-up discussions, weighted feedback, and neural voice.
+
+## Actual technology stack
+
+| Layer | Technology |
+| --- | --- |
+| Backend / HTTP server | **Python, FastAPI, Uvicorn** |
+| Validation | Pydantic |
+| AI integration | Groq via async HTTPX |
+| Neural voice | Groq Orpheus English |
+| Frontend | React, TypeScript, Tailwind CSS, Radix UI |
+| Frontend build tools only | Vite, Node.js / npm |
+| Hosting | Render, GitHub auto-deploy |
+| Database | None; interview state is kept in browser memory |
+
+**All API logic is Python.** There is no Node.js API server, Next.js server, or JavaScript proxy in the request path. FastAPI serves both the APIs and compiled React files. Node/npm are only frontend development/build tools (the existing Render service uses an npm launcher that starts Python).
 
 ## Screenshots
 
-Real screenshots captured from the running application.
-
-![Interview setup with seven engineering tracks](docs/screenshots/setup.png)
-
-![Python coding interview](docs/screenshots/coding-round.png)
-
-![Python solution editor](docs/screenshots/python-editor.png)
+![FastAPI-backed interview feedback](docs/screenshots/fastapi-interview.png)
+![Interview setup](docs/screenshots/setup.png)
+![Coding question](docs/screenshots/coding-round.png)
+![Python editor](docs/screenshots/python-editor.png)
 
 ## Features
 
-- 35 curated questions across Python, full-stack, RAG, GenAI/LLMs, frontend, AWS, and DSA.
-- Separate, editable TypeScript question-bank files for each track.
-- Junior, mid-level, and senior review settings; three- or five-question sessions.
-- Conversational prompts, spoken questions, optional voice answers, and follow-up discussion.
-- Python coding editor with starter functions, examples, constraints, reference solutions, and complexity explanations.
-- Groq-generated questions adapted to topic, seniority, previous questions, last answer, and feedback.
-- Groq Orpheus neural English voice (Hannah by default), with labelled browser-speech fallback and mute control. Long utterances are split into chunks of up to 200 characters.
-- Separate generation/scoring prompts with feedback, reference answers, and a visible scoring breakdown: concepts/keywords 50%, correctness/context 35%, clarity 10%, grammar 5%. Correct synonyms count; keyword stuffing does not.
-- Honest demo mode: reference practice remains available without an API key, but no AI score is assigned.
+- Seven tracks: Python, full-stack, RAG, GenAI/LLMs, frontend, AWS, and DSA.
+- 35 curated fallback questions, separated by topic into JSON files shared by Python and React.
+- Groq-generated questions based on topic, junior/mid/senior level, previous questions, last answer and feedback.
+- Separate question-generation and scoring prompts in `backend/prompts.py`.
+- Server-calculated scoring: concepts 50%, correctness/context 35%, clarity 10%, grammar 5%. Equivalent explanations count; keyword stuffing does not.
+- Strict JSON-schema provider output plus Pydantic validation.
+- Python editor, examples, constraints, reference solutions, and complexity explanations.
+- Neural English voice with browser-speech fallback, microphone transcription, and mute controls.
+- Signed, four-hour question tokens; server-side API key; body-size limits.
+- Clearly labelled curated/ungraded fallbacks if Groq is unavailable.
 
-## Coding round
+**Candidate code is reviewed, not executed.** No Python execution sandbox is exposed to users. This remains an interview-practice tool, not a validated hiring assessment. Session state resets on refresh.
 
-Choose **DSA & Coding**, enter the interview room, explain your approach, and write your solution. After submitting, discuss Maya's follow-up or reveal the reference solution.
+## Run locally (Windows PowerShell)
 
-Included exercises: Two Sum, balanced brackets, longest unique substring, merge intervals, and binary search. Each covers edge cases and time/space complexity.
+Requirements: Python 3.11+ and Node.js 22.13+ (for building React).
 
-**Code is reviewed, not executed.** There is no Python runtime or sandbox in this application. AI feedback can be wrong; test solutions independently. Groq generates new questions when configured; the 35 curated questions remain a clearly labelled fallback. Generated questions are signed server-side to prevent changing the reference before scoring, and expire after four hours.
-
-## Run locally
-
-Requirements: Node.js 22.13+ and npm.
-
-```sh
-git clone https://github.com/mfslovely/interviewiq-ai-interviewer.git
-cd interviewiq-ai-interviewer/interviewiq
+```powershell
+cd interviewiq
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 npm ci
+npm run build:frontend
 ```
 
-Copy `.env.example` to `.env.local`, then configure:
+Create `interviewiq/.env.local` from `.env.example` only if it does not already exist:
 
 ```dotenv
-GROQ_API_KEY=your_groq_api_key
+GROQ_API_KEY=your_key_here
 GROQ_MODEL=openai/gpt-oss-20b
 GROQ_TTS_VOICE=hannah
 ```
 
-Keep the key server-side. Never commit environment files or put the key in a public/browser variable. Leave the key empty to use ungraded demo mode.
+Do not put real secrets in `.env.example` or commit `.env.local`. Python loads this local file without overriding Render environment settings.
 
-The same Groq key powers question generation, scoring, and neural TTS. Add it yourself in **Render → service → Environment → GROQ_API_KEY**, then save/redeploy. No real key is included in this repository. Neural speech requires access to `canopylabs/orpheus-v1-english`; provider access/usage charges apply. This voice is English, not Hindi/Hinglish. Available English voices include `hannah`, `autumn`, `diana`, `austin`, `daniel`, and `troy`; see [Groq's official speech documentation](https://console.groq.com/docs/text-to-speech/orpheus).
+Start the Python server:
 
-```sh
-npm run dev
+```powershell
+.\.venv\Scripts\python.exe -m backend
 ```
 
-Open the localhost address printed by the server.
+Open [localhost:8000](http://localhost:8000). FastAPI docs: [localhost:8000/docs](http://localhost:8000/docs).
 
-## Project structure
+On Linux/macOS, use `.venv/bin/python` instead of `.venv\Scripts\python.exe`.
+
+For frontend hot reload, keep FastAPI on port 8000 and run `npm run dev` in a second terminal. Vite proxies `/api` to Python during development only. Production has one Python server and no proxy.
+
+## Backend structure
 
 ```text
 interviewiq/
-  app/interview-studio.tsx       Interview room and coding UI
-  app/api/interview/route.ts    Validated server-side Groq review
-  app/api/interview/review.ts   Request and response schemas
-  app/api/health/route.ts       Health check
-  app/api/question/route.ts     Contextual Groq question generation
-  app/api/speech/route.ts       Server-side Orpheus neural speech
-  lib/interview-prompts.ts      Separate generation and scoring prompts
-  lib/scoring.ts                Server-enforced weighted score
-  lib/use-interviewer-voice.ts  Audio playback, cancellation, and fallback
-  lib/question-banks/
-    python.ts                  Python interview questions
-    fullstack.ts               Full-stack questions
-    rag.ts                     RAG questions
-    genai.ts                   GenAI and LLM questions
-    frontend.ts                Frontend questions
-    aws.ts                     AWS questions
-    dsa.ts                     Python coding exercises and solutions
-    types.ts                   Shared question types
-render.yaml                    Render deployment configuration
-docs/screenshots/              Actual application screenshots
+  backend/
+    main.py              FastAPI routes, fallbacks, static frontend serving
+    __main__.py          Uvicorn entry point (0.0.0.0:$PORT)
+    models.py            Pydantic request/provider schemas
+    provider.py          Async Groq chat and neural speech client
+    prompts.py           Separate generation and scoring instructions
+    security.py          HMAC signing, verification, expiry
+    question_banks/      python.json, fullstack.json, rag.json, genai.json,
+                         frontend.json, aws.json, dsa.json
+    tests/test_api.py    Mock-provider regression and security tests
+  src/main.tsx           React entry point
+  app/interview-studio.tsx
+  lib/use-interviewer-voice.ts
+  requirements.txt       Pinned Python runtime dependencies
+  requirements-dev.txt   Test dependencies
+  dist/                  Generated frontend files (ignored)
 ```
 
-Built with React, TypeScript, Tailwind CSS, shadcn-style components, and Vinext/Vite using Next-compatible app routes. No database is required for the current interview flow. Session state lives in the browser and resets on reload.
+| Endpoint | Purpose |
+| --- | --- |
+| GET /api/health | Health and Python/FastAPI runtime identification |
+| POST /api/question | Contextual question generation |
+| POST /api/interview | Answer/code and follow-up scoring |
+| POST /api/speech | Neural WAV audio |
+| GET /docs | FastAPI Swagger UI |
 
-## Checks
+## Verification
 
-```sh
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend/tests -q
 npx tsc --noEmit
 npm run lint
-npm run build
-npm run start:render
+npm run build:frontend
 ```
 
-With the server running, execute the API smoke tests in another terminal:
+Tests use a fake provider, not the real API key. They cover scoring math, generated questions, signed-token tampering/expiry, question context, follow-up context, body limits, invalid JSON, provider outages, WAV responses, static serving, and secret-file protection.
 
-```sh
+Optional HTTP smoke tests (server already running):
+
+```powershell
+$env:TEST_BASE_URL='http://localhost:8000'
 node --test scripts/interview-smoke.test.mjs
-node --experimental-strip-types --test scripts/ai-contracts.test.mjs
 ```
 
-The smoke tests default to `http://localhost:3000`; set `TEST_BASE_URL` to test another local port. They verify validation and response contracts, not the quality of a live model's review.
+These smoke tests call Groq if the running server has a key, so provider usage may apply.
 
 ## Render deployment
 
-Use the root `render.yaml` Blueprint, or configure a Node web service:
+The root `render.yaml` defines a Python service:
 
-- Build: `cd interviewiq && npm ci && npm run build`
-- Start: `cd interviewiq && npm run start:render`
-- Health check: `/api/health`
-- Set `GROQ_API_KEY` as a secret in the Render dashboard.
-- Optional model override: `GROQ_MODEL`.
+- Root directory: `interviewiq`
+- Build: `npm ci && npm run build:frontend && pip install -r requirements.txt`
+- Start: `python -m backend`
+- Health: `/api/health`
+- Secret: `GROQ_API_KEY`
+- Model: `openai/gpt-oss-20b`
+- Voice: `hannah`
 
-The server binds to `0.0.0.0` and uses Render's `PORT`. The existing service deploys automatically from `main`. Free instances may take time to wake after inactivity.
+For the existing service URL, backward-compatible build/start scripts install a Python virtual environment and launch Uvicorn. Its earlier Render native runtime selection may still display Node; that is a platform/build setting, not the application's backend. No Node web server is launched.
 
-## Privacy and limitations
+All calls use the same Groq key. Orpheus terms must be accepted in Groq Console. Neural speech is English, not Hindi/Hinglish. Browser microphone support varies. Free Render instances can sleep when idle.
 
-When configured, answers, code, and recent interview context are sent to Groq for generation/review; spoken interviewer text is sent for neural speech. Audio is AI-generated, not a real interviewer. Browser speech recognition may use the browser provider's service; support varies by browser. Do not submit secrets or confidential interview material. The app does not intentionally persist interview transcripts, but hosting/provider logging and retention policies still apply.
+## Privacy and remaining limitations
 
-This is a practice app, not an assessment or hiring decision system. It currently has no authentication or request rate limiting; add access controls and usage limits before exposing a paid API key to unrestricted public traffic.
+Answers, code and recent interview context are sent to Groq; interviewer text is sent for speech synthesis. Browser speech recognition may use the browser vendor's servers. Never submit secrets. Audio is AI-generated. There is no app database or saved interview history.
+
+Authentication, distributed rate limiting, and sandboxed code execution are not implemented. Add access/usage controls before broad public use of a paid API key.

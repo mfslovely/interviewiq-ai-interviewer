@@ -1,0 +1,69 @@
+{
+  "id": "aws",
+  "label": "AWS Cloud",
+  "shortLabel": "AWS",
+  "accent": "#ffdc62",
+  "description": "Architecture, reliability, IAM, observability, and cost control.",
+  "questions": [
+    {
+      "id": "aws-1",
+      "prompt": "Design a highly available Python API on AWS for unpredictable traffic.",
+      "followUp": "What would make you choose Lambda over ECS Fargate?",
+      "signals": [
+        "load balancing",
+        "multi-AZ",
+        "autoscaling",
+        "managed database"
+      ],
+      "idealAnswer": "Use Route 53 and CloudFront where helpful, an ALB with multi-AZ ECS/Fargate or Lambda, autoscaling, stateless services, RDS/Aurora Multi-AZ, queues for burst absorption, and end-to-end observability. Choose Lambda for event-driven bursty work; Fargate for steadier or long-running workloads."
+    },
+    {
+      "id": "aws-2",
+      "prompt": "How would you design IAM for a team and its production workloads?",
+      "followUp": "What is the role of short-lived credentials?",
+      "signals": [
+        "least privilege",
+        "roles",
+        "federation",
+        "service control policy"
+      ],
+      "idealAnswer": "Federate humans through IAM Identity Center, use role-based access and permission boundaries, isolate accounts, apply organization guardrails, and give workloads dedicated roles. Short-lived credentials reduce static-secret exposure and improve revocation."
+    },
+    {
+      "id": "aws-3",
+      "prompt": "A queue-backed worker sometimes processes the same message twice. Is that a bug, and how do you handle it?",
+      "followUp": "How do visibility timeout and dead-letter queues fit?",
+      "signals": [
+        "at-least-once",
+        "idempotency",
+        "visibility timeout",
+        "DLQ"
+      ],
+      "idealAnswer": "Standard queues are at-least-once, so consumers must be idempotent using stable operation keys or conditional writes. Set visibility above expected processing time with extension, bound retries, and send poison messages to a DLQ for investigation."
+    },
+    {
+      "id": "aws-4",
+      "prompt": "Your AWS bill jumps 40% overnight. Walk me through your response.",
+      "followUp": "What preventive controls would you add afterward?",
+      "signals": [
+        "cost explorer",
+        "tags",
+        "anomaly detection",
+        "budgets"
+      ],
+      "idealAnswer": "Confirm the anomaly, segment Cost Explorer by service, account, region, and tag, correlate with deployments and usage metrics, then contain safely. Add budgets, anomaly alerts, ownership tags, quotas, rightsizing, and architecture-specific cost dashboards."
+    },
+    {
+      "id": "aws-5",
+      "prompt": "What does a useful observability setup look like for a distributed Python service on AWS?",
+      "followUp": "How would you trace one failed customer request across services?",
+      "signals": [
+        "structured logs",
+        "metrics",
+        "traces",
+        "correlation ID"
+      ],
+      "idealAnswer": "Emit structured centralized logs, RED/USE metrics, distributed traces, meaningful SLOs, and actionable alerts. Propagate a trace or correlation ID across HTTP, queues, and database spans, then connect user impact to the failing dependency."
+    }
+  ]
+}
