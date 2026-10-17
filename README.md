@@ -146,3 +146,7 @@ All calls use the same Groq key. Orpheus terms must be accepted in Groq Console.
 Answers, code and recent interview context are sent to Groq; interviewer text is sent for speech synthesis. Browser speech recognition may use the browser vendor's servers. Never submit secrets. Audio is AI-generated. There is no app database or saved interview history.
 
 Authentication, distributed rate limiting, and sandboxed code execution are not implemented. Add access/usage controls before broad public use of a paid API key.
+
+## Additional projects
+
+- [Worldwide Transactions Data Pipeline](projects/worldwide-transactions-pipeline/README.md) - synthetic multi-country ETL, validation, risk enrichment, SQLite warehouse, and analytics outputs.
